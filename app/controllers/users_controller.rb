@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
   
   # On ajoute la méthode createcard dans la liste des méthodes où on set le user au début
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :createcard]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :createcard, :createlink]
 
   # On saute une etape de securite si on appel CREATECARD en JSON
-  skip_before_action :verify_authenticity_token, only: [:createcard]
+  skip_before_action :verify_authenticity_token, only: [:createcard, :createlink]
 
 
   # GET /users
@@ -83,6 +83,22 @@ class UsersController < ApplicationController
     end
   end
 
+  # POST /users/1/createlink.json
+  def createlink
+    # On crée un nouvel objet link à partir des paramètres reçus
+    @link = Link.new(link_params)
+    # On précise que cet object Link dépend du user concerné
+    @link.user = @user
+
+    respond_to do |format|
+      if @link.save
+        format.json
+      else
+        format.json { render json: @link.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -95,13 +111,17 @@ class UsersController < ApplicationController
     end
 
     # On ajoute les paramètres qu'on va envoyer avec le createcard
+    # Seulement les paramètres de base, le userid vient dans l'URL qu'on query
     def card_params
       params.require(:card).permit(:card_name, :first_name, :last_name, :phone_nbr, :facebook_link, 
         :linkedin_link, :email, :street, :city, :postal_code, :country, :description, :picture_url)
     end
+
+    # On ajoute les paramètres qu'on va envoyer avec le createlink
+    # En plus des paramètres de base, il faut spécifier avec quelle card on se link
+    # En revanche le userid vient dans l'URL qu'on query
+    def link_params
+      params.require(:link).permit(:card_id, :lat, :lng, :meeting_date)
+    end
 end
 
-
-
-# Curl de test pour le createcard :
-# curl 'http://localhost:3000/users/1/createcard.json' -H 'Content-Type: application/json'  -d '{"card": {"card_name": "Business", "first_name": "Ben", "last_name": "Stirrup", "phone_nbr": "0606060606", "facebook_link": "...", "linkedin_link": "...", "email": "...", "street": "5 rue du surf", "city": "Noumea", "postal_code": ".", "coutry": "Nouvelle-Calédonie", "descrition": "blabla", "picture_url": "."} }'

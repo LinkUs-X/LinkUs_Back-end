@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  lat: 1.5
+  lng: 1.5
+  meeting_date: 2016-10-12
+  user: one
+  card: one
+
+two:
+  lat: 1.5
+  lng: 1.5
+  meeting_date: 2016-10-12
+  user: two
+  card: two

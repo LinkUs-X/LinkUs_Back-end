@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'home/index'
 
   post 'users/:id/createcard' => 'users#createcard'
+  post 'users/:id/createlink' => 'users#createlink'
 
   root 'home#index'
 
