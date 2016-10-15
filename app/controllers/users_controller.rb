@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :createcard, :createlink]
 
   # On saute une etape de securite si on appel CREATECARD en JSON
-  skip_before_action :verify_authenticity_token, only: [:createcard, :createlink]
+  skip_before_action :verify_authenticity_token, only: [:create, :createcard, :createlink]
 
 
   # GET /users

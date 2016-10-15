@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :users
   get 'home/index'
 
+  post 'users/createuser' => 'users#create'
   post 'users/:id/createcard' => 'users#createcard'
   post 'users/:id/createlink' => 'users#createlink'
 
