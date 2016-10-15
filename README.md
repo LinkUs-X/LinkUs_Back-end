@@ -9,5 +9,14 @@ Curl de test pour le createlink :
 
 
 Création de la table cards :
+# $ rails g migration DropCards 
 # $ rails g model Card card_name:string first_name:string last_name:string phone_nbr:string facebook_link:string linkedin_link:string email:string street:string city:string postal_code:string country:string description:string picture_url:string user:references
 # $ rake db:migrate
+
+Création de la table links :
+# $ rails g migration DropLinks 
+# $ rails g model Link card_id:integer lat:float lng:float meeting_date:date user:references
+# $ rake db:migrate
+
+
+
