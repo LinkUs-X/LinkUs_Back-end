@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+
+  resources :links
+  get 'links/:user_id' => 'links#showlinks'
+  get 'links' => 'links#index'
+
   resources :users
   get 'home/index'
 
