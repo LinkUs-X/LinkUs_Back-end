@@ -1,1 +1,1 @@
-json.extract! @link, :id, :lat, :lng, :meeting_date
+json.extract! @link, :id, :lat, :lng, :meeting_date, :user_id

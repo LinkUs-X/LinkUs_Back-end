@@ -1,4 +1,4 @@
-json.products @links do |link|
+json.links @links do |link|
   json.card_id link.card_id
   json.lat link.lat
   json.lng link.lng

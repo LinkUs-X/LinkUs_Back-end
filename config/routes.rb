@@ -1,10 +1,9 @@
 Rails.application.routes.draw do
 
-  resources :links
-  get 'links/:user_id' => 'links#showlinks'
+  resources :users, :links
+  get 'links/:id' => 'links#show'
   get 'links' => 'links#index'
 
-  resources :users
   get 'home/index'
 
   post 'users/createuser' => 'users#create'
