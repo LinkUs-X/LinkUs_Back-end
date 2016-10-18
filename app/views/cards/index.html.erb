@@ -1,0 +1,52 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Cards of all users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User ID</th>
+      <th>Card Name</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Phone Number</th>
+      <th>Facebook Link</th>
+      <th>Linkedin Link</th>
+      <th>Email</th>
+      <th>Street</th>
+      <th>City</th>
+      <th>Postal Code</th>
+      <th>Country</th>
+      <th>Description</th>
+      <th>Picture</th>
+      <th>Created at</th>
+      <th>Updated at</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cards.each do |card| %>
+      <tr>
+        <td><%= card.user_id %></td>      
+        <td><%= card.card_name %></td>
+        <td><%= card.first_name %></td>
+        <td><%= card.last_name %></td>
+        <td><%= card.phone_nbr %></td>
+        <td><%= card.facebook_link %></td>
+        <td><%= card.linkedin_link %></td>
+        <td><%= card.email %></td>
+        <td><%= card.street %></td>
+        <td><%= card.city %></td>
+        <td><%= card.postal_code %></td>
+        <td><%= card.country %></td>
+        <td><%= card.description %></td>
+        <td><%= card.picture_url %></td>
+        <td><%= card.created_at %></td>
+        <td><%= card.updated_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>

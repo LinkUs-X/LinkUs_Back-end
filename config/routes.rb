@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
 
-  resources :users, :links
+  resources :users, :links, :cards
+  get 'cards/:id' => 'cards#show'
+  get 'cards' => 'cards#index'
+
   get 'links/:id' => 'links#show'
   get 'links' => 'links#index'
 
