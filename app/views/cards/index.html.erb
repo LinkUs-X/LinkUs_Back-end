@@ -5,7 +5,9 @@
 <table>
   <thead>
     <tr>
+      <th>Card ID</th>
       <th>User ID</th>
+      <th>User login</th> 
       <th>Card Name</th>
       <th>First Name</th>
       <th>Last Name</th>
@@ -28,7 +30,9 @@
   <tbody>
     <% @cards.each do |card| %>
       <tr>
-        <td><%= card.user_id %></td>      
+        <td><%= card.id %></td>  
+        <td><%= card.user_id %></td>   
+        <td><%= User.find(card.user_id).login %></td>   
         <td><%= card.card_name %></td>
         <td><%= card.first_name %></td>
         <td><%= card.last_name %></td>
@@ -44,9 +48,13 @@
         <td><%= card.picture_url %></td>
         <td><%= card.created_at %></td>
         <td><%= card.updated_at %></td>
+        <td><%= link_to 'Edit', edit_card_path(card) %></td>
+        <td><%= link_to 'Destroy', card, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
+
+<%= link_to 'New Card', new_card_path %>

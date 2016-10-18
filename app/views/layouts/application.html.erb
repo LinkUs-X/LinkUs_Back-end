@@ -1,14 +1,34 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>LinkUsBackEnd</title>
+    <title>LinkUs Back Office</title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <!-- For all other devices -->
+    <!-- Size should be 32 x 32 pixels -->
+    <%= favicon_link_tag 'favicon.ico', :rel => 'shortcut icon' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
+  	<div class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">LinkUs Back Office</a>
+        <div class="navbar-collapse collapse navbar-responsive-collapse">
+          <ul class="nav navbar-nav">
+            <li><%= link_to "Users", "/users"  %></li>
+            <li><%= link_to "Cards", "/cards"  %></li>
+            <li><%= link_to "Links", "/links"  %></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <%= yield %>
+
+    <footer>
+   	  <p>&copy; LinkUs 2016</p>
+    </footer>
   </body>
 </html>

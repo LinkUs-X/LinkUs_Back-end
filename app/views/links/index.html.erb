@@ -5,8 +5,11 @@
 <table>
   <thead>
     <tr>
+      <th>Link Id</th>
       <th>User Id</th>
+      <th>User login</th>
       <th>Card Id</th>
+      <th>Card Owner Name</th>
       <th>Latitude</th>
       <th>Longitude</th>
       <th>Meeting Date</th>
@@ -19,16 +22,23 @@
   <tbody>
     <% @links.each do |link| %>
       <tr>
+        <td><%= link.id %></td>  
         <td><%= link.user_id %></td>
+        <td><%= User.find(link.user_id).login %></td>
         <td><%= link.card_id %></td>
+        <td><%= Card.find(link.card_id).first_name %></td>
         <td><%= link.lat %></td>
         <td><%= link.lng %></td>
         <td><%= link.meeting_date %></td>
         <td><%= link.created_at %></td>
         <td><%= link.updated_at %></td>
+        <td><%= link_to 'Edit', edit_link_path(link) %></td>
+        <td><%= link_to 'Destroy', link, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
+
+<%= link_to 'New Link', new_link_path %>

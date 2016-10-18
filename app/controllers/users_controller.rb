@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   
   # On ajoute la méthode createcard dans la liste des méthodes où on set le user au début
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :createcard, :createlink]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :createcard, :createlink, :showcardsbyuser, :showlinksbyuser]
 
   # On saute une etape de securite si on appel CREATECARD en JSON
   skip_before_action :verify_authenticity_token, only: [:create, :createcard, :createlink]
@@ -16,6 +16,15 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+  end
+
+  # GET /users/1/showcardsbyuser
+  # GET /users/1/showcardsbyuser.json
+  def showcardsbyuser
+    @user = User.find(params[:id])
+    
+    @cards = Card.where("user_id = ?", params[:id]).order(:user_id)
+
   end
 
   # GET /users/new
