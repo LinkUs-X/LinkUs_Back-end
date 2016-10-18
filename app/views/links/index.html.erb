@@ -5,11 +5,11 @@
 <table>
   <thead>
     <tr>
+      <th>User Id</th>
       <th>Card Id</th>
       <th>Latitude</th>
       <th>Longitude</th>
       <th>Meeting Date</th>
-      <th>User Id</th>
       <th>Created at</th>
       <th>Updated at</th>
       <th colspan="2"></th>
@@ -19,11 +19,11 @@
   <tbody>
     <% @links.each do |link| %>
       <tr>
+        <td><%= link.user_id %></td>
         <td><%= link.card_id %></td>
         <td><%= link.lat %></td>
         <td><%= link.lng %></td>
         <td><%= link.meeting_date %></td>
-        <td><%= link.user_id %></td>
         <td><%= link.created_at %></td>
         <td><%= link.updated_at %></td>
       </tr>
