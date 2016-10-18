@@ -22,9 +22,11 @@
         <td><%= user.password %></td>
         <td><%= user.created_at %></td>
         <td><%= user.updated_at %></td>
-        <td><%= link_to 'Show', user %></td>
+        <td><%= link_to 'Show User', user %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show Cards', showcardsbyuser_path(user) %></td>
+        <td><%= link_to 'Show Links', showlinksbyuser_path(user) %></td>
       </tr>
     <% end %>
   </tbody>

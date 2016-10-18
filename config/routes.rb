@@ -10,8 +10,8 @@ Rails.application.routes.draw do
   get 'home/index'
 
   post 'users/createuser' => 'users#create'
-  get 'users/:id/showcardsbyuser' => 'users#showcardsbyuser'
-  #get 'users/:id/showlinksbyuser' => 'users#showlinksbyuser'
+  get 'users/:id/showcardsbyuser' => 'users#showcardsbyuser', as: 'showcardsbyuser' 
+  get 'users/:id/showlinksbyuser' => 'users#showlinksbyuser', as: 'showlinksbyuser'
   post 'users/:id/createcard' => 'users#createcard'
   post 'users/:id/createlink' => 'users#createlink'
 

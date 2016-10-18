@@ -24,7 +24,14 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     
     @cards = Card.where("user_id = ?", params[:id]).order(:user_id)
+  end
 
+  # GET /users/1/showslinksbyuser
+  # GET /users/1/showlinksbyuser.json
+  def showlinksbyuser
+    @user = User.find(params[:id])
+    
+    @links = Link.where("user_id = ?", params[:id]).order(:user_id)
   end
 
   # GET /users/new

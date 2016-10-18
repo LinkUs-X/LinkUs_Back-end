@@ -1,11 +1,13 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Cards of user with id <%= @user.id %></h1>
+<h1>Cards of "<%= @user.login %>"</h1>
 
 <table>
   <thead>
     <tr>
+      <th>Card ID</th>
       <th>User ID</th>
+      <th>User login</th> 
       <th>Card Name</th>
       <th>First Name</th>
       <th>Last Name</th>
@@ -28,7 +30,9 @@
   <tbody>
     <% @cards.each do |card| %>
       <tr>
-        <td><%= card.user_id %></td>
+        <td><%= card.id %></td>  
+        <td><%= card.user_id %></td>   
+        <td><%= User.find(card.user_id).login %></td>   
         <td><%= card.card_name %></td>
         <td><%= card.first_name %></td>
         <td><%= card.last_name %></td>

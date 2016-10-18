@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Links of all users</h1>
+<h1>Links of "<%= @user.login %>"</h1>
 
 <table>
   <thead>
@@ -9,7 +9,7 @@
       <th>User Id</th>
       <th>User login</th>
       <th>Card Id</th>
-      <th>Contact Name</th>
+      <th>Contact Login</th>
       <th>Latitude</th>
       <th>Longitude</th>
       <th>Meeting Date</th>
@@ -32,8 +32,6 @@
         <td><%= link.meeting_date %></td>
         <td><%= link.created_at %></td>
         <td><%= link.updated_at %></td>
-        <td><%= link_to 'Edit', edit_link_path(link) %></td>
-        <td><%= link_to 'Destroy', link, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -41,4 +39,4 @@
 
 <br>
 
-<%= link_to 'New Link', new_link_path %>
+<%= link_to 'Back', users_path %>

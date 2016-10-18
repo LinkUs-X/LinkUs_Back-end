@@ -2,10 +2,7 @@ class CardsController < ApplicationController
   
 
   def show
-  	@user = User.find(params[:id])
-  	
-  	@cards = Card.where("user_id = ?", params[:id]).order(:user_id)
-
+  	@cards = Card.find(params[:id])
   end
 
   def index
