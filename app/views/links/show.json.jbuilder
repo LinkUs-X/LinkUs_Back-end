@@ -1,12 +1,19 @@
-json.links @links do |link|
-  json.user_id link.user_id
-  json.card_id link.card_id
-  json.lat link.lat
-  json.lng link.lng
-  json.meeting_date link.meeting_date
-  json.created_at link.created_at
-  json.updated_at link.updated_at
+json.partial! "links/link", link: @link
 
-  @card = Card.find(link.card_id)
-  json.card @card 
- end
+
+
+
+
+# Ancien code qui peut servir:
+
+#json.links @links do |link|
+#  json.user_id link.user_id
+#  json.card_id link.card_id
+#  json.lat link.lat
+#  json.lng link.lng
+#  json.created_at link.created_at
+#  json.updated_at link.updated_at
+
+#  @card = Card.find(link.card_id)
+#  json.card @card 
+# end

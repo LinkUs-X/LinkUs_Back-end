@@ -27,6 +27,8 @@
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <td><%= link_to 'Show Cards', showcardsbyuser_path(user) %></td>
         <td><%= link_to 'Show Links', showlinksbyuser_path(user) %></td>
+        <td><%= link_to 'New Card', newcard_path(user) %></td>
+        <td><%= link_to 'New Link', newlink_path(user) %></td>
       </tr>
     <% end %>
   </tbody>

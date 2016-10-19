@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   
   # On ajoute la méthode createcard dans la liste des méthodes où on set le user au début
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :createcard, :createlink, :showcardsbyuser, :showlinksbyuser]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :createcard, :createlink, :showcardsbyuser, :showlinksbyuser, :newcard, :newlink]
 
   # On saute une etape de securite si on appel CREATECARD en JSON
   skip_before_action :verify_authenticity_token, only: [:create, :createcard, :createlink]
@@ -37,6 +37,18 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
+  end
+
+  # GET /users/1/newcard
+  def newcard
+    @user = User.find(params[:id])
+    @card = Card.new
+  end
+
+  # GET /users/1/newlink
+  def newlink
+    @user = User.find(params[:id])
+    @link = Link.new
   end
 
   # GET /users/1/edit
@@ -92,6 +104,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @card.save
+        format.html { redirect_to users_url, notice: 'Card was successfully created.' }
         format.json
       else
         format.json { render json: @card.errors, status: :unprocessable_entity }
@@ -108,6 +121,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @link.save
+        format.html { redirect_to users_url, notice: 'Link was successfully created.' }
         format.json
       else
         format.json { render json: @link.errors, status: :unprocessable_entity }
@@ -137,7 +151,7 @@ class UsersController < ApplicationController
     # En plus des paramètres de base, il faut spécifier avec quelle card on se link
     # En revanche le userid vient dans l'URL qu'on query
     def link_params
-      params.require(:link).permit(:card_id, :lat, :lng, :meeting_date)
+      params.require(:link).permit(:card_id, :lat, :lng)
     end
 end
 

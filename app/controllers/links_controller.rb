@@ -1,29 +1,13 @@
 class LinksController < ApplicationController
-  
+
+  before_action :set_link, only: [:show, :update, :destroy]  
 
   def show
-  	@user = User.find(params[:id])
-  	
-  	@links = Link.where("user_id = ?", params[:id]).order(:meeting_date)
-
+  	@links = Link.find(params[:id])
   end
 
   def index
   	@links = Link.all.order(:user_id)
-  end
-
-  # PATCH/PUT /links/1
-  # PATCH/PUT /links/1.json
-  def update
-    respond_to do |format|
-      if @link.update(link_params)
-        format.html { redirect_to @link, notice: 'Link was successfully updated.' }
-        format.json { render :show, status: :ok, location: @link }
-      else
-        format.html { render :edit }
-        format.json { render json: @link.errors, status: :unprocessable_entity }
-      end
-    end
   end
 
   # DELETE /links/1
@@ -35,4 +19,11 @@ class LinksController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_link
+      @link = Link.find(params[:id])
+    end
+
 end

@@ -1,5 +1,9 @@
 <p id="notice"><%= notice %></p>
 
+<p>
+  <strong>User ID:</strong>
+  <%= @card.user_id %>
+</p>
 
 <p>
   <strong>Card Name:</strong>
@@ -11,5 +15,60 @@
   <%= @card.first_name %>
 </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
+<p>
+  <strong>Last Name:</strong>
+  <%= @card.last_name %>
+</p>
+
+<p>
+  <strong>Phone Number:</strong>
+  <%= @card.phone_nbr %>
+</p>
+
+<p>
+  <strong>Facebook Link:</strong>
+  <%= @card.facebook_link %>
+</p>
+
+<p>
+  <strong>Linkedin Link:</strong>
+  <%= @card.linkedin_link %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @card.email %>
+</p>
+
+<p>
+  <strong>Street:</strong>
+  <%= @card.street %>
+</p>
+
+<p>
+  <strong>City:</strong>
+  <%= @card.city %>
+</p>
+
+<p>
+  <strong>Postal Code:</strong>
+  <%= @card.postal_code %>
+</p>
+
+<p>
+  <strong>Country:</strong>
+  <%= @card.country %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @card.description %>
+</p>
+
+<p>
+  <strong>Picture URL:</strong>
+  <%= @card.picture_url %>
+</p>
+
+<%= link_to 'Edit', edit_card_path(@card) %> |
 <%= link_to 'Back', cards_path %>

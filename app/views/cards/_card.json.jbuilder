@@ -1,0 +1,2 @@
+json.extract! card, :id, :user_id, :card_name, :first_name, :last_name,:phone_nbr, :facebook_link, :linkedin_link, :email, :street, :city, :postal_code, :country, :description, :picture_url, :created_at, :updated_at
+json.url card_url(card, format: :json)
