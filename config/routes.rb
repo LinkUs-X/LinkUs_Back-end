@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
 
-  resources :users, :links, :cards
+  resources :users, :links, :cards, :link_requests
+
+  get 'link_requests' => 'link_requests#index'
+  get 'link_requests/show/:id' => 'link_requests#show'
+
   get 'cards/:id' => 'cards#show'
   get 'cards' => 'cards#index'
 
@@ -8,6 +12,13 @@ Rails.application.routes.draw do
   get 'links' => 'links#index'
 
   get 'home/index'
+
+  get 'link_requests' => 'link_requests#index'
+  get 'link_requests/show/:id' => 'link_requests#show'
+  get 'users/:id/createrequest/:contact_id' => 'users#createrequest'
+  get 'users/:id/updaterequest/:contact_id' => 'users#updaterequest'
+  get 'users/:id/destroyrequest/:contact_id' => 'users#destroyrequest'
+
 
   post 'users/createuser' => 'users#create'
   get 'users/:id/newcard' => 'users#newcard', as: 'newcard'

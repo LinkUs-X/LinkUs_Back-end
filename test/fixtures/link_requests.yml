@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  card_id: 1
+  lat: 1.5
+  lng: 1.5
+
+two:
+  user_id: 1
+  card_id: 1
+  lat: 1.5
+  lng: 1.5

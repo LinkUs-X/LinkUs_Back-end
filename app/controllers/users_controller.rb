@@ -6,7 +6,6 @@ class UsersController < ApplicationController
   # On saute une etape de securite si on appel CREATECARD en JSON
   skip_before_action :verify_authenticity_token, only: [:create, :createcard, :createlink]
 
-
   # GET /users
   # GET /users.json
   def index
@@ -111,21 +110,99 @@ class UsersController < ApplicationController
       end
     end
   end
+ 
+  # Create a link request: @user is an existing user asking the contact of 
+  # @contact, who is another existing user.
+  # POST request: /users/:id/createrequest/:contact_id
+  def createrequest
+    # We use default parameters for position of link request
+    # while waiting for another functionality to be implemented.
+    @default_lat = 0
+    @default_lng = 0
+    
+    # Retrieve existing users from URL parameters:
+    @user = User.find(params[:id])
+    @contact = User.find(params[:contact_id])
 
-  # POST /users/1/createlink.json
-  def createlink
-    # On crée un nouvel objet link à partir des paramètres reçus
-    @link = Link.new(link_params)
-    # On précise que cet object Link dépend du user concerné
-    @link.user = @user
+    # Retrieve card id of @contact:
+    @contact_card_id = Card.find_by(user_id: @contact.id).id
 
-    respond_to do |format|
-      if @link.save
-        format.html { redirect_to users_url, notice: 'Link was successfully created.' }
-        format.json
-      else
-        format.json { render json: @link.errors, status: :unprocessable_entity }
-      end
+    # Create link request from @user to @contact, using @contact_card_id:
+    @link_request = LinkRequest.new(user_id: @user.id, card_id: @contact_card_id, 
+      lat: @default_lat, lng: @default_lng)
+
+    if @link_request.save
+      flash[:notice] = "Contact request sent!"
+      redirect_to users_path
+    else
+      flash[:notice] = "Unable to request contact."
+      redirect_to users_path
+    end
+  end
+
+  # Accept a link request and create subsequently two links.
+  # Note that in opposite to createrequest, @user is the user
+  # to whom the link request was sent, and @contact is the user
+  # who sent the link request.
+  # POST request: /users/:id/updaterequest/:contact_id
+  def updaterequest
+    # We use default parameters for position and date of link.Note
+    # that these should be the same as the parameters used for createrequest:
+    @default_lat = 0
+    @default_lng = 0
+    @default_meeting_date = DateTime.new(2001, 2, 3, 4, 5, 6)
+    
+    # Retrieve existing users from URL parameters:
+    @user = User.find(params[:id])
+    @contact = User.find(params[:contact_id])
+
+    # Retrieve card ids of @user and @contact:
+    @user_card = Card.find_by(user_id: @user.id)
+    @user_card_id = @user_card.id
+    @contact_card = Card.find_by(user_id: @contact.id)
+    @contact_card_id = @contact_card.id
+
+    # Retrieve first name of @contact in order to confirm to whom 
+    # @user just exchanged their card:
+    @contact_first_name = @contact_card.first_name
+
+    # Retrieve link request from @contact to @user. Now it is only used to
+    # be deleted subsequently. However, later on it could be used for validation
+    # so that links cannot be created without link requests, with an .accept method
+    # for example.
+    @link_request = LinkRequest.find_by(card_id: @user_card_id, user_id: @contact.id)
+
+    # Accept link request and create two links: one to signal that
+    # @user has the card of @contact, and the other one to signal
+    # that @contact has the card of @user.
+
+    flash[:notice] = "You and #{@contact_first_name} are now contacts!"
+    @link1 = Link.new(user_id: @user.id, card_id: @contact_card_id, lat: @default_lat,
+      lng: @default_lng, meeting_date: @default_meeting_date)
+    @link1.save
+    @link2 = Link.new(user_id: @contact.id, card_id: @user_card_id, lat: @default_lat,
+      lng: @default_lng, meeting_date: @default_meeting_date)
+    @link2.save
+ 
+    # Destroy the link request once that @user and @contact are contacts:
+    @link_request.destroy
+
+    redirect_to user_path
+  end
+
+  # @user declines a link request from @contact. 
+  # POST request: /users/:id/destroyrequest/:contact_id
+  def destroyrequest
+    @user = User.find(params[:id])
+    @contact = User.find(params[:contact_id])
+
+    @user_card = Card.find_by(user_id: @user.id)
+    @user_card_id = @user_card.id
+
+    @link_request = LinkRequest.find_by(card_id: @user_card_id, user_id: @contact.id)
+    if @link_request.destroy
+      flash[:notice] = "Request Declined."
+      redirect_to user_path
     end
   end
 
@@ -153,5 +230,9 @@ class UsersController < ApplicationController
     def link_params
       params.require(:link).permit(:card_id, :lat, :lng)
     end
-end
 
+    # I am not sure 
+    def link_request_params
+      params.require(:link_request).permit(:card_id, :user_id, :lat, :lng, :meeting_date)
+    end
+end
