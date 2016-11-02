@@ -15,10 +15,6 @@ Curl de test pour le createcard :
 Curl de test pour le createlink :
 # $ curl 'http://localhost:3000/users/2/createlink.json' -H 'Content-Type: application/json'  -d '{"link": {"card_id": 1, "lat": 48.8771744, "lng": 2.3013612, "meeting_date": "2015-10-30"} }'
 
-
-
-
-
 Création de la table cards :
 # $ rails g migration DropCards 
 # $ rails g model Card card_name:string first_name:string last_name:string phone_nbr:string facebook_link:string linkedin_link:string email:string street:string city:string postal_code:string country:string description:string picture_url:string user:references
@@ -29,6 +25,25 @@ Création de la table links :
 # $ rails g model Link card_id:integer lat:float lng:float meeting_date:date user:references
 # $ rake db:migrate
 
+-----------------How to ASK, ACCEPT and DECLINE a contact request-----------------------------------
 
+## ASK - GET request: /users/:id/createrequest/:contact_id
+   #
+   # Create link request from @user (params[:id]) who wants the card with id @contact_card_id of
+   # @contact (params[:contact_id]).
+   
+## ACCEPT - GET request: /users/:id/updaterequest/:contact_id
+   #
+   # Accept a link request and create subsequently two links: one to signal that @user has the card
+   # of @contact, and the other one to signal that @contact has the card of @user.
+   # Note that in opposite to createrequest, @user (params[:id]) is the user to whom the link request
+   # was sent, and @contact (params[:contact_id]) is the user who sent the link request.
+
+## DECLINE - GET request: /users/:id/destroyrequest/:contact_id
+   #
+   # @user (params[:id]) declines a link request from @contact (params[:contact_id]).
+
+-----------------------------------------------------------------------------------------------------
+    
 
 

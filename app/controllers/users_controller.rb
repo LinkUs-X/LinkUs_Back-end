@@ -136,7 +136,7 @@ class UsersController < ApplicationController
       redirect_to users_path
     else
       flash[:notice] = "Unable to request contact."
-      redirect_to users_path
+     # redirect_to users_path
     end
   end
 
