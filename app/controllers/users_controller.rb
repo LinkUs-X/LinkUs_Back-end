@@ -111,8 +111,8 @@ class UsersController < ApplicationController
     end
   end
  
-  # Create a link request: @user is an existing user sending a contact request.
-  # POST request: /users/:id/createrequest/
+  # Create a link request from user with id = params[:id].
+  # GET request: /users/:id/createrequest/
   def createrequest
     # We use default parameters for position of link request
     # while waiting for another functionality to be implemented.
@@ -127,10 +127,10 @@ class UsersController < ApplicationController
 
     # Create link request from user:
     if link_request1 = LinkRequest.create(user_id: user.id, card_id: user_card_id, 
-      lat: default_lat, lng: default_lng)
+      lat: lat, lng: lng)
 
       flash[:notice] = "Contact request sent!"
-      # Future use Resque.enqueue(Destroyer, @link_request.id)
+      # Future use: Resque.enqueue(Destroyer, @link_request.id)
       # flash[:notice] = "Timeout"
      
       # Iterate through all requests in database:
@@ -165,7 +165,8 @@ class UsersController < ApplicationController
           end
           return
         else
-          format.json { render json: @link1.errors, status: :unprocessable_entity }
+          @links = [@link1, @link2]
+          format.json { render json: @links.errors, status: :unprocessable_entity }
           return
         end   
       end
