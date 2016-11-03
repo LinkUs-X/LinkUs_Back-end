@@ -111,9 +111,8 @@ class UsersController < ApplicationController
     end
   end
  
-  # Create a link request: @user is an existing user asking the contact of 
-  # @contact, who is another existing user.
-  # POST request: /users/:id/createrequest/:contact_id
+  # Create a link request: @user is an existing user sending a contact request.
+  # POST request: /users/:id/createrequest/
   def createrequest
     # We use default parameters for position of link request
     # while waiting for another functionality to be implemented.
@@ -122,21 +121,46 @@ class UsersController < ApplicationController
     
     # Retrieve existing users from URL parameters:
     @user = User.find(params[:id])
-    @contact = User.find(params[:contact_id])
 
-    # Retrieve card id of @contact:
-    @contact_card_id = Card.find_by(user_id: @contact.id).id
+    # Retrieve card id of @user:
+    @user_card_id = Card.find_by(user_id: @user.id).id
 
-    # Create link request from @user to @contact, using @contact_card_id:
-    @link_request = LinkRequest.new(user_id: @user.id, card_id: @contact_card_id, 
+    # Create link request from @user:
+    @link_request1 = LinkRequest.new(user_id: @user.id, card_id: @user_card_id, 
       lat: @default_lat, lng: @default_lng)
 
-    if @link_request.save
+    if @link_request1.save
       flash[:notice] = "Contact request sent!"
-      redirect_to users_path
+      # Resque.enqueue(Destroyer, @link_request.id)
+      # flash[:notice] = "Timeout"
+      if LinkRequest.count > 1 
+        LinkRequest.find_each do |link_request| 
+          #next if link_request == @link_request1
+          if not link_request == @link_request1
+            if (@link_request1.created_at.utc - link_request.created_at.utc) < 30.seconds 
+              @link_request2 = link_request
+              if @link1 = Link.create(user_id: @user.id, card_id: @user_card_id, lat: @default_lat,
+              lng: @default_lng, meeting_date: Time.now) &&
+              @link2 = Link.create(user_id: @link_request2.user_id, card_id: Card.find_by(user_id: 
+                @link_request2.user_id).id, lat: @default_lat, lng: @default_lng, meeting_date: Time.now)
+                respond_to do |format| 
+                 format.html { redirect_to users_url, notice: 'Links were successfully created.' }
+                 format.json
+                end
+              else
+               format.json { render json: @link1.errors, status: :unprocessable_entity }
+               format.json { render json: @link2.errors, status: :unprocessable_entity }
+              end
+              @link_request1.destroy
+              @link_request2.destroy
+              return
+            end
+          else
+          end
+        end
+      end
     else
       flash[:notice] = "Unable to request contact."
-     # redirect_to users_path
     end
   end
 
