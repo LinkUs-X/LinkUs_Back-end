@@ -148,8 +148,6 @@ class UsersController < ApplicationController
                 @link_request1.delete
                 @link_request.delete
                 return
-              else if Link.where(user_id: @user.id, card_id: Card.find_by(user_id: 
-                @user_id).id).exists?(conditions = :none)
               end             
               if @link1 = Link.create(user_id: @user.id, card_id: Card.find_by(user_id: 
                 @link_request.user_id).id , lat: @default_lat,lng: @default_lng, meeting_date: Time.now) &&
