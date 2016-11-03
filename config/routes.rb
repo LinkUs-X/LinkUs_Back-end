@@ -13,11 +13,10 @@ Rails.application.routes.draw do
 
   get 'home/index'
 
+# Requests:
   get 'link_requests' => 'link_requests#index'
   get 'link_requests/show/:id' => 'link_requests#show'
   get 'users/:id/createrequest/' => 'users#createrequest'
-  get 'users/:id/updaterequest/:contact_id' => 'users#updaterequest'
-  get 'users/:id/destroyrequest/:contact_id' => 'users#destroyrequest'
 
 
   post 'users/createuser' => 'users#create'

@@ -116,8 +116,8 @@ class UsersController < ApplicationController
   def createrequest
     # We use default parameters for position of link request
     # while waiting for another functionality to be implemented.
-    default_lat = 0
-    default_lng = 0
+    lat = 0
+    lng = 0
     
     # Retrieve current user from URL parameters:
     user = User.find(params[:id])
@@ -130,9 +130,10 @@ class UsersController < ApplicationController
       lat: default_lat, lng: default_lng)
 
       flash[:notice] = "Contact request sent!"
-      # Resque.enqueue(Destroyer, @link_request.id)
+      # Future use Resque.enqueue(Destroyer, @link_request.id)
       # flash[:notice] = "Timeout"
      
+      # Iterate through all requests in database:
       LinkRequest.find_each do |link_request| 
 
         # Skip the current user:
@@ -155,9 +156,9 @@ class UsersController < ApplicationController
 
         # If all the tests were passed, the users exchange their cards:
         if @link1 = Link.create(user_id: user.id, card_id: Card.find_by(user_id: 
-            link_request.user_id).id , lat: default_lat,lng: default_lng, meeting_date: Time.now) &&
-           @link2 = Link.create(user_id: link_request.user_id, card_id: user_card_id, lat: default_lat,
-            lng: default_lng, meeting_date: Time.now)
+            link_request.user_id).id , lat: lat,lng: lng, meeting_date: Time.now) &&
+           @link2 = Link.create(user_id: link_request.user_id, card_id: user_card_id, lat: lat,
+            lng: lng, meeting_date: Time.now)
           respond_to do |format| 
            format.html { redirect_to users_url, notice: 'Links were successfully created.' }
            format.json
