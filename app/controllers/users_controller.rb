@@ -116,126 +116,60 @@ class UsersController < ApplicationController
   def createrequest
     # We use default parameters for position of link request
     # while waiting for another functionality to be implemented.
-    @default_lat = 0
-    @default_lng = 0
+    default_lat = 0
+    default_lng = 0
     
-    # Retrieve existing users from URL parameters:
-    @user = User.find(params[:id])
+    # Retrieve current user from URL parameters:
+    user = User.find(params[:id])
 
-    # Retrieve card id of @user:
-    @user_card_id = Card.find_by(user_id: @user.id).id
+    # Retrieve card id of user:
+    user_card_id = Card.find_by(user_id: user.id).id
 
-    # Create link request from @user:
-    @link_request1 = LinkRequest.new(user_id: @user.id, card_id: @user_card_id, 
-      lat: @default_lat, lng: @default_lng)
+    # Create link request from user:
+    if link_request1 = LinkRequest.create(user_id: user.id, card_id: user_card_id, 
+      lat: default_lat, lng: default_lng)
 
-    # if 
-      @link_request1.save
       flash[:notice] = "Contact request sent!"
       # Resque.enqueue(Destroyer, @link_request.id)
       # flash[:notice] = "Timeout"
-      if LinkRequest.count >= 0 
-        LinkRequest.find_each do |link_request| 
-          #next if link_request == @link_request1
-            @link_request = link_request
-            
-            if (@link_request1.created_at.utc - link_request.created_at.utc) < 10.seconds && 
-              @link_request != @link_request1 
-              if Link.where(user_id: @user.id, card_id: Card.find_by(user_id: 
-                @link_request.user_id).id).exists?(conditions = :none) || Link.where(user_id: @link_request.user_id,
-                 card_id: Card.find_by(user_id: @user_card_id).id).exists?(conditions = :none)
-                flash[:notice] = "Links already exist!"
-                @link_request1.delete
-                @link_request.delete
-                return
-              end             
-              if @link1 = Link.create(user_id: @user.id, card_id: Card.find_by(user_id: 
-                @link_request.user_id).id , lat: @default_lat,lng: @default_lng, meeting_date: Time.now) &&
-              @link2 = Link.create(user_id: @link_request.user_id, card_id: @user_card_id, lat: @default_lat,
-               lng: @default_lng, meeting_date: Time.now)
-                respond_to do |format| 
-                 format.html { redirect_to users_url, notice: 'Links were successfully created.' }
-                 format.json
-                end
-              else
-               format.json { render json: @link1.errors, status: :unprocessable_entity }
-               format.json { render json: @link2.errors, status: :unprocessable_entity }
-              end
-              @link_request1.delete
-              @link_request.delete
-            end
-          # else
-          # end
+     
+      LinkRequest.find_each do |link_request| 
+
+        # Skip the current user:
+        if link_request == link_request1 
+          next
         end
+
+        # Skip all requests not made within the last 15 seconds:
+        if (link_request1.created_at.utc - link_request.created_at.utc) > 15.seconds
+          next                 
+        end
+
+        # Check if the users already exchanged their cards in the past:
+        if Link.where(user_id: user.id, card_id: Card.find_by(user_id: 
+          link_request.user_id).id).exists?(conditions = :none) || Link.where(user_id: link_request.user_id,
+           card_id: Card.find_by(user_id: user_card_id).id).exists?(conditions = :none)
+          flash[:notice] = "Links already exist!"
+          return
+        end
+
+        # If all the tests were passed, the users exchange their cards:
+        if @link1 = Link.create(user_id: user.id, card_id: Card.find_by(user_id: 
+            link_request.user_id).id , lat: default_lat,lng: default_lng, meeting_date: Time.now) &&
+           @link2 = Link.create(user_id: link_request.user_id, card_id: user_card_id, lat: default_lat,
+            lng: default_lng, meeting_date: Time.now)
+          respond_to do |format| 
+           format.html { redirect_to users_url, notice: 'Links were successfully created.' }
+           format.json
+          end
+          return
+        else
+          format.json { render json: @link1.errors, status: :unprocessable_entity }
+          return
+        end   
       end
-    # else
-    #   flash[:notice] = "Unable to request contact."
-    # end
-  end
-
-  # Accept a link request and create subsequently two links.
-  # Note that in opposite to createrequest, @user is the user
-  # to whom the link request was sent, and @contact is the user
-  # who sent the link request.
-  # POST request: /users/:id/updaterequest/:contact_id
-  def updaterequest
-    # We use default parameters for position and date of link.Note
-    # that these should be the same as the parameters used for createrequest:
-    @default_lat = 0
-    @default_lng = 0
-    @default_meeting_date = DateTime.new(2001, 2, 3, 4, 5, 6)
-    
-    # Retrieve existing users from URL parameters:
-    @user = User.find(params[:id])
-    @contact = User.find(params[:contact_id])
-
-    # Retrieve card ids of @user and @contact:
-    @user_card = Card.find_by(user_id: @user.id)
-    @user_card_id = @user_card.id
-    @contact_card = Card.find_by(user_id: @contact.id)
-    @contact_card_id = @contact_card.id
-
-    # Retrieve first name of @contact in order to confirm to whom 
-    # @user just exchanged their card:
-    @contact_first_name = @contact_card.first_name
-
-    # Retrieve link request from @contact to @user. Now it is only used to
-    # be deleted subsequently. However, later on it could be used for validation
-    # so that links cannot be created without link requests, with an .accept method
-    # for example.
-    @link_request = LinkRequest.find_by(card_id: @user_card_id, user_id: @contact.id)
-
-    # Accept link request and create two links: one to signal that
-    # @user has the card of @contact, and the other one to signal
-    # that @contact has the card of @user.
-
-    flash[:notice] = "You and #{@contact_first_name} are now contacts!"
-    @link1 = Link.new(user_id: @user.id, card_id: @contact_card_id, lat: @default_lat,
-      lng: @default_lng, meeting_date: @default_meeting_date)
-    @link1.save
-    @link2 = Link.new(user_id: @contact.id, card_id: @user_card_id, lat: @default_lat,
-      lng: @default_lng, meeting_date: @default_meeting_date)
-    @link2.save
- 
-    # Destroy the link request once that @user and @contact are contacts:
-    @link_request.destroy
-
-    redirect_to user_path
-  end
-
-  # @user declines a link request from @contact. 
-  # POST request: /users/:id/destroyrequest/:contact_id
-  def destroyrequest
-    @user = User.find(params[:id])
-    @contact = User.find(params[:contact_id])
-
-    @user_card = Card.find_by(user_id: @user.id)
-    @user_card_id = @user_card.id
-
-    @link_request = LinkRequest.find_by(card_id: @user_card_id, user_id: @contact.id)
-    if @link_request.destroy
-      flash[:notice] = "Request Declined."
-      redirect_to user_path
+    else
+      flash[:notice] = "Unable to request contact."
     end
   end
 
@@ -264,7 +198,6 @@ class UsersController < ApplicationController
       params.require(:link).permit(:card_id, :lat, :lng)
     end
 
-    # I am not sure 
     def link_request_params
       params.require(:link_request).permit(:card_id, :user_id, :lat, :lng, :meeting_date)
     end

@@ -25,25 +25,20 @@ Création de la table links :
 # $ rails g model Link card_id:integer lat:float lng:float meeting_date:date user:references
 # $ rake db:migrate
 
------------------How to ASK, ACCEPT and DECLINE a contact request-----------------------------------
+-----------------How to CREATE contact requests-------------------------------------------------
 
-## ASK - GET request: /users/:id/createrequest/:contact_id
+## GET request: /users/:id/createrequest
    #
-   # Create link request from @user (params[:id]) who wants the card with id @contact_card_id of
-   # @contact (params[:contact_id]).
-   
-## ACCEPT - GET request: /users/:id/updaterequest/:contact_id
+   # Create link request from @user (params[:id]) who kind of "display" its card to other
+   # users. If another user creates a similar request within a 15 seconds interval, provided
+   # they did not already exchanged their cards in the past, they will exchange their cards now.
    #
-   # Accept a link request and create subsequently two links: one to signal that @user has the card
-   # of @contact, and the other one to signal that @contact has the card of @user.
-   # Note that in opposite to createrequest, @user (params[:id]) is the user to whom the link request
-   # was sent, and @contact (params[:contact_id]) is the user who sent the link request.
-
-## DECLINE - GET request: /users/:id/destroyrequest/:contact_id
+   # Example: suppose user1 creates a contact request, and then user2 creates a contact request
+   # within 15 seconds. The following links are created:
+   # link1 => user_id: user2.id, card_id: card_of_user1.id  meaning user2 has the card of user1.
+   # link2 => user_id: user1.id, card_id: card_of_user2.id  meaning user1 has the card of user2.
    #
-   # @user (params[:id]) declines a link request from @contact (params[:contact_id]).
-
+   # NB: all link_request objects are stored in the database, whether or not they were used
+   # to successfully create links between two users.
+  
 -----------------------------------------------------------------------------------------------------
-    
-
-
