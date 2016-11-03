@@ -1,4 +1,5 @@
 json.cards @cards do |card|
+  json.id card.id
   json.user_id card.user_id
   json.card_name card.card_name 
   json.first_name card.first_name 

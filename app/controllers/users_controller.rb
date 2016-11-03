@@ -129,20 +129,32 @@ class UsersController < ApplicationController
     @link_request1 = LinkRequest.new(user_id: @user.id, card_id: @user_card_id, 
       lat: @default_lat, lng: @default_lng)
 
-    if @link_request1.save
+    # if 
+      @link_request1.save
       flash[:notice] = "Contact request sent!"
       # Resque.enqueue(Destroyer, @link_request.id)
       # flash[:notice] = "Timeout"
-      if LinkRequest.count > 1 
+      if LinkRequest.count >= 0 
         LinkRequest.find_each do |link_request| 
           #next if link_request == @link_request1
-          if not link_request == @link_request1
-            if (@link_request1.created_at.utc - link_request.created_at.utc) < 30.seconds 
-              @link_request2 = link_request
-              if @link1 = Link.create(user_id: @user.id, card_id: @user_card_id, lat: @default_lat,
-              lng: @default_lng, meeting_date: Time.now) &&
-              @link2 = Link.create(user_id: @link_request2.user_id, card_id: Card.find_by(user_id: 
-                @link_request2.user_id).id, lat: @default_lat, lng: @default_lng, meeting_date: Time.now)
+            @link_request = link_request
+            
+            if (@link_request1.created_at.utc - link_request.created_at.utc) < 10.seconds && 
+              @link_request != @link_request1 
+              if Link.where(user_id: @user.id, card_id: Card.find_by(user_id: 
+                @link_request.user_id).id).exists?(conditions = :none) || Link.where(user_id: @link_request.user_id,
+                 card_id: Card.find_by(user_id: @user_card_id).id).exists?(conditions = :none)
+                flash[:notice] = "Links already exist!"
+                @link_request1.delete
+                @link_request.delete
+                return
+              else if Link.where(user_id: @user.id, card_id: Card.find_by(user_id: 
+                @user_id).id).exists?(conditions = :none)
+              end             
+              if @link1 = Link.create(user_id: @user.id, card_id: Card.find_by(user_id: 
+                @link_request.user_id).id , lat: @default_lat,lng: @default_lng, meeting_date: Time.now) &&
+              @link2 = Link.create(user_id: @link_request.user_id, card_id: @user_card_id, lat: @default_lat,
+               lng: @default_lng, meeting_date: Time.now)
                 respond_to do |format| 
                  format.html { redirect_to users_url, notice: 'Links were successfully created.' }
                  format.json
@@ -151,17 +163,16 @@ class UsersController < ApplicationController
                format.json { render json: @link1.errors, status: :unprocessable_entity }
                format.json { render json: @link2.errors, status: :unprocessable_entity }
               end
-              @link_request1.destroy
-              @link_request2.destroy
-              return
+              @link_request1.delete
+              @link_request.delete
             end
-          else
-          end
+          # else
+          # end
         end
       end
-    else
-      flash[:notice] = "Unable to request contact."
-    end
+    # else
+    #   flash[:notice] = "Unable to request contact."
+    # end
   end
 
   # Accept a link request and create subsequently two links.
