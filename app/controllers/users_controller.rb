@@ -112,23 +112,26 @@ class UsersController < ApplicationController
   end
  
   # Create a link request from user with id = params[:id].
-  # GET request: /users/:id/createrequest/
+  # POST request: /users/:id/createrequest/
   def createrequest
     # We use default parameters for position of link request
     # while waiting for another functionality to be implemented.
     lat = 0
     lng = 0
     
-    # Retrieve current user from URL parameters:
-    user = User.find(params[:id])
+    # Retrieve current user's card_id from URL parameters:
+    user_card = Card.find(params[:id])
+    user = user_card.user
+    user_card_id = user_card.id
 
-    # Retrieve card id of user:
-    user_card_id = Card.find_by(user_id: user.id).id
+    # Retrieve user_id:
+    user_id = user.id
 
     # Create link request from user:
-    if link_request1 = LinkRequest.create(user_id: user.id, card_id: user_card_id, 
+    link_request1 = LinkRequest.new(user_id: user_id, card_id: user_card_id, 
       lat: lat, lng: lng)
 
+    if link_request1.save
       flash[:notice] = "Contact request sent!"
       # Future use: Resque.enqueue(Destroyer, @link_request.id)
       # flash[:notice] = "Timeout"
@@ -147,18 +150,19 @@ class UsersController < ApplicationController
         end
 
         # Check if the users already exchanged their cards in the past:
-        if Link.where(user_id: user.id, card_id: Card.find_by(user_id: 
+        if Link.where(user_id: user_id, card_id: Card.find_by(user_id: 
           link_request.user_id).id).exists?(conditions = :none) || Link.where(user_id: link_request.user_id,
-           card_id: Card.find_by(user_id: user_card_id).id).exists?(conditions = :none)
+           card_id: user_card_id).exists?(conditions = :none)
           flash[:notice] = "Links already exist!"
           return
         end
 
         # If all the tests were passed, the users exchange their cards:
-        if @link1 = Link.create(user_id: user.id, card_id: Card.find_by(user_id: 
-            link_request.user_id).id , lat: lat,lng: lng, meeting_date: Time.now) &&
-           @link2 = Link.create(user_id: link_request.user_id, card_id: user_card_id, lat: lat,
-            lng: lng, meeting_date: Time.now)
+        @link1 = Link.new(user_id: user_id, card_id: Card.find_by(user_id: 
+          link_request.user_id).id , lat: lat,lng: lng, meeting_date: Time.now) 
+        @link2 = Link.new(user_id: link_request.user_id, card_id: user_card_id, lat: lat,
+          lng: lng, meeting_date: Time.now)
+        if @link1.save && @link2.save
           respond_to do |format| 
            format.html { redirect_to users_url, notice: 'Links were successfully created.' }
            format.json
@@ -189,7 +193,7 @@ class UsersController < ApplicationController
     # On ajoute les paramètres qu'on va envoyer avec le createcard
     # Seulement les paramètres de base, le userid vient dans l'URL qu'on query
     def card_params
-      params.require(:card).permit(:card_name, :first_name, :last_name, :phone_nbr, :facebook_link, 
+      params.require(:card).permit(:id, :card_name, :first_name, :last_name, :phone_nbr, :facebook_link, 
         :linkedin_link, :email, :street, :city, :postal_code, :country, :description, :picture_url)
     end
 
