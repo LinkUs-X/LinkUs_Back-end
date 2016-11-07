@@ -193,7 +193,7 @@ class UsersController < ApplicationController
     # On ajoute les paramètres qu'on va envoyer avec le createcard
     # Seulement les paramètres de base, le userid vient dans l'URL qu'on query
     def card_params
-      params.require(:card).permit(:id, :card_name, :first_name, :last_name, :phone_nbr, :facebook_link, 
+      params.require(:card).permit(:card_name, :first_name, :last_name, :phone_nbr, :facebook_link, 
         :linkedin_link, :email, :street, :city, :postal_code, :country, :description, :picture_url)
     end
 
