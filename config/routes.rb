@@ -16,7 +16,8 @@ Rails.application.routes.draw do
 # Requests:
   get 'link_requests' => 'link_requests#index'
   get 'link_requests/show/:id' => 'link_requests#show'
-  get 'users/:id/createrequest/' => 'users#createrequest'
+  get 'users/:id/verifylinkcreation' => 'users#verifylinkcreation'
+  post 'users/:id/createrequest/' => 'users#createrequest'
 
 
   post 'users/createuser' => 'users#create'

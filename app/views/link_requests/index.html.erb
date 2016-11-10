@@ -11,6 +11,7 @@
       <th>Card Id</th>
       <th>Latitude</th>
       <th>Longitude</th>
+      <th>Link Created</th>
       <th>Created at</th>
       <th>Updated at</th>
       <th colspan="2"></th>
@@ -26,6 +27,7 @@
         <td><%= link_request.card_id %></td>
         <td><%= link_request.lat %></td>
         <td><%= link_request.lng %></td>
+        <td><%= link_request.link_created %></td>
         <td><%= link_request.created_at %></td>
         <td><%= link_request.updated_at %></td>
         <td><%= link_to 'Destroy', link_request, method: :delete, data: { confirm: 'Are you sure?' } %></td>
