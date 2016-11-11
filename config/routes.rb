@@ -2,9 +2,6 @@ Rails.application.routes.draw do
 
   resources :users, :links, :cards, :link_requests
 
-  get 'link_requests' => 'link_requests#index'
-  get 'link_requests/show/:id' => 'link_requests#show'
-
   get 'cards/:id' => 'cards#show'
   get 'cards' => 'cards#index'
 
