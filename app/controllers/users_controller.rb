@@ -137,7 +137,7 @@ class UsersController < ApplicationController
       LinkRequest.find_each do |link_request| 
 
         # Skip the current user:
-        if link_request == @link_request1 
+        if link_request == @link_request1 || #link_request.user_id == user_id
           next
         end
 
@@ -146,10 +146,10 @@ class UsersController < ApplicationController
           next
         end                 
 
-        # Skip all requests not made within a 25 meters radius:
-        if shortDistance(link_request1.lat, link_request1.lng, link_request.lat, link_request.lng) > 25
-          next
-        end
+        # # Skip all requests not made within a 25 meters radius:
+        # if shortDistance(link_request1.lat, link_request1.lng, link_request.lat, link_request.lng) > 25
+        #   next
+        # end
 
         # Check if the users already exchanged their cards in the past:
         if Link.where(user_id: user_id, card_id: Card.find_by(user_id: 

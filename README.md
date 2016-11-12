@@ -60,3 +60,22 @@ Création de la table links :
    # NB: to be used by front-end as condition for timeout after a link-request.
   
 -----------------------------------------------------------------------------------------------------
+
+
+--------------------------------USEFUL TERMINAL COMMANDS --------------------------------------------
+
+## Heroku:
+$ heroku run rails console
+$ git push heroku master
+$ heroku run rake --trace db:migrate
+
+## Rails:
+$ rails console
+$ rails console --sandbox
+$ rails generate migration AddObject_To_AddToModel object_to_add:type
+$ rails generate migration RemovePartNumberFromProducts part_number:string
+$ rails db:migrate
+
+## In console (rails or heroku):
+>>> Object.delete_all
+>>> exit
