@@ -2,7 +2,7 @@ class LinkRequestsController < ApplicationController
 
 	# GET request: /link_requests
 	def index
-		@link_requests = LinkRequest.all
+		@link_requests = LinkRequest.all.order(:id)
 	end
 
 	# GET request: /link_requests/:id

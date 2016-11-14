@@ -10,7 +10,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @users = User.all.order(:id)
   end
 
   # GET /users/1
@@ -137,7 +137,7 @@ class UsersController < ApplicationController
       LinkRequest.find_each do |link_request| 
 
         # Skip the current user:
-        if link_request == @link_request1 || #link_request.user_id == user_id
+        if link_request == @link_request1 || link_request.user_id == user_id
           next
         end
 
