@@ -197,7 +197,7 @@ class UsersController < ApplicationController
     if @link_request_check.link_created == true
       render :text => "success"
     elsif @link_request_check.link_created == false && (Time.now.utc - @link_request_check.created_at.utc) <= 15.seconds
-      render :text => "pending!"
+      render :text => "pending"
     elsif @link_request_check.link_created == false && (Time.now.utc - @link_request_check.created_at.utc) > 15.seconds
       render :text => "error"
     end
