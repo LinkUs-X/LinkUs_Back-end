@@ -1,1 +1,0 @@
-json.link_created @link_request_check.link_created
