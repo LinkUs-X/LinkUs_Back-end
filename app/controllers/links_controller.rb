@@ -7,7 +7,7 @@ class LinksController < ApplicationController
   end
 
   def index
-  	@links = Link.all.order(:user_id)
+  	@links = Link.all.order(:id)
   end
 
   # DELETE /links/1
