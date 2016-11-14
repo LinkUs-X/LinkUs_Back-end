@@ -195,11 +195,11 @@ class UsersController < ApplicationController
      @link_request_check = LinkRequest.where(user_id: params[:id]).order("created_at ASC").last 
 
     if @link_request_check.link_created == true
-      render json: 'success'
+      render json: 'success'.to_json
     elsif @link_request_check.link_created == false && (Time.now.utc - @link_request_check.created_at.utc) <= 15.seconds
-      render json: 'pending'
+      render json: 'pending'.to_json
     elsif @link_request_check.link_created == false && (Time.now.utc - @link_request_check.created_at.utc) > 15.seconds
-      render json: 'error'
+      render json: 'error'.to_json
     end
   end
 
