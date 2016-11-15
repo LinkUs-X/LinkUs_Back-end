@@ -192,14 +192,21 @@ class UsersController < ApplicationController
   # Verify status of current link request of current user.
   # GET request: /users/:id/verifylinkcreation/
   def verifylinkcreation
-     @link_request_check = LinkRequest.where(user_id: params[:id]).order("created_at ASC").last 
+    @link_request_check = LinkRequest.where(user_id: params[:id]).order("created_at ASC").last 
+    @status = ""
 
     if @link_request_check.link_created == true
-      render :text => "success"
+      @status = "success"
+  
     elsif @link_request_check.link_created == false && (Time.now.utc - @link_request_check.created_at.utc) <= 15.seconds
-      render :text => "pending"
+      @status = "pending"
+
     elsif @link_request_check.link_created == false && (Time.now.utc - @link_request_check.created_at.utc) > 15.seconds
-      render :text => "error"
+      @status = "error"
+    end
+    
+    respond_to do |format|
+      format.json {render json: {status: @status}}
     end
   end
 
